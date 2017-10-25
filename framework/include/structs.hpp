@@ -44,4 +44,21 @@ struct shader_program {
   // uniform locations mapped to name
   std::map<std::string, GLint> u_locs{};
 };
+
+struct moon
+{
+  std::string name;
+  float rotation_speed;
+  float distance;
+  float size;
+  std::string o_name;
+};
+
+struct planet
+{
+  std::string name;
+  float rotation_speed;
+  float distance;
+  float size;
+};
 #endif

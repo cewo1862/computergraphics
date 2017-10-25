@@ -22,6 +22,10 @@ class ApplicationSolar : public Application {
   //handle delta mouse movement input
   void mouseCallback(double pos_x, double pos_y);
 
+  void upload_planet_transforms(planet p) const;
+  void upload_moon_transforms(moon m) const;
+
+
   // draw all objects
   void render() const;
 
@@ -32,6 +36,7 @@ class ApplicationSolar : public Application {
 
   // cpu representation of model
   model_object planet_object;
+  std::vector<planet> planets;
 };
 
 #endif

@@ -23,29 +23,78 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  :Application{resource_path}
  ,planet_object{}
 {
+//Initialisierung der Planeten nach Struct
+  planet sun = {"sun",0.2,0.0,0.8};
+  planet mercury = {"mercury",1.0,1.5,0.1};
+  planet venus = {"venus",0.9,2.0,0.15};
+  planet earth = {"earth",0.8,2.5,0.15};
+  planet mars = {"mars",0.7,3.5,0.2};
+  planet jupiter = {"jupiter",0.6,4.5,0.3};
+  planet saturn = {"saturn",0.5,4.9,0.3};
+  planet uranus = {"uranus",0.4,5.0,0.25};
+  planet neptune = {"neptune",0.3,5.5,0.25};
+//Befüllen des planets-Vectors
+  planets.insert(planets.end(),{sun,mercury,venus,earth,mars,jupiter,saturn,uranus,neptune});
   initializeGeometry();
   initializeShaderPrograms();
 }
 
-void ApplicationSolar::render() const {
-  // bind shader to upload uniforms
-  glUseProgram(m_shaders.at("planet").handle);
-
-  glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
-  model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});
+void ApplicationSolar::upload_planet_transforms(planet p) const {
+//Matrixtransformationen unter Verwendung der Werte der Planeten
+  glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()*p.rotation_speed), glm::fvec3{0.0f, 1.0f, 0.0f});
+  model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f*p.distance});
+  model_matrix = glm::scale(model_matrix, glm::fvec3{1.0f*p.size, 1.0f*p.size, 1.0f*p.size});
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(model_matrix));
-
-  // extra matrix for normal transformation to keep them orthogonal to surface
   glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
                      1, GL_FALSE, glm::value_ptr(normal_matrix));
+  }
 
-  // bind the VAO to draw
+void ApplicationSolar::upload_moon_transforms(moon m) const {
+//Suche nach passendem Planeten für den Mond
+  planet p;
+  for(std::vector<planet>::size_type i = 0; i != planets.size(); i++) {
+     p = planets.at(i);
+     if(p.name == m.o_name){
+      break;
+     }
+}
+//Transformationen der Erde
+  glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()*p.rotation_speed), glm::fvec3{0.0f, 1.0f, 0.0f});
+  model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f*p.distance});
+//Transformationen des Mondes im Bezug zur Erde
+  model_matrix = glm::rotate(model_matrix, float(glfwGetTime()*m.rotation_speed), glm::fvec3{0.0f, 1.0f, 0.0f});
+  model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f*m.distance});
+  model_matrix = glm::scale(model_matrix, glm::fvec3{1.0f*m.size, 1.0f*m.size, 1.0f*m.size});
+  
+  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
+                     1, GL_FALSE, glm::value_ptr(model_matrix));
+  glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
+  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
+                     1, GL_FALSE, glm::value_ptr(normal_matrix));
+  }
+void ApplicationSolar::render() const {
+
+  glUseProgram(m_shaders.at("planet").handle);
+
+//Schleife über alle Planeten im Vector
+  for(std::vector<planet>::size_type i = 0; i != planets.size(); i++) {
+    planet p = planets.at(i);
+    upload_planet_transforms(p);
+
   glBindVertexArray(planet_object.vertex_AO);
 
-  // draw bound vertex array using bound shader
   glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+  }
+//Initalisierung des Erdenmondes nach Moon-Struct
+  moon e_moon = {"e_moon",5.0,0.5,0.08,"earth"};
+  upload_moon_transforms(e_moon);
+
+  glBindVertexArray(planet_object.vertex_AO);
+
+  glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+
 }
 
 void ApplicationSolar::updateView() {
