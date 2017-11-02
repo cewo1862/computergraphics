@@ -37,6 +37,7 @@ class ApplicationSolar : public Application {
   // cpu representation of model
   model_object planet_object;
   std::vector<planet> planets;
+  std::vector<float> s-values;
 };
 
 #endif
