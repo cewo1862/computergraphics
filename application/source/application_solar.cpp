@@ -24,7 +24,19 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  :Application{resource_path}
  ,planet_object{}
 {
-//Initialisierung der Planeten nach Struct
+  /*vec3 planet_positions [8] = vec3[]{
+    vec3();
+    vec3();
+    vec3();
+    vec3();
+    vec3();
+    vec3();
+    vec3();
+    vec3();
+  }
+*/
+  vec3 sun_position(0.0,0.0,0.0);
+
   planet sun = {"sun",0.2,0.0,0.8};
   planet mercury = {"mercury",1.0,1.5,0.1};
   planet venus = {"venus",0.9,2.0,0.15};
