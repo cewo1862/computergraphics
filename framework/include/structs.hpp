@@ -52,6 +52,9 @@ struct moon
   float distance;
   float size;
   std::string o_name;
+  float r_color;
+  float g_color;
+  float b_color;
 };
 
 struct planet
@@ -60,5 +63,8 @@ struct planet
   float rotation_speed;
   float distance;
   float size;
+  float r_color;
+  float g_color;
+  float b_color;
 };
 #endif

@@ -35,17 +35,16 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
     vec3();
   }
 */
-  vec3 sun_position(0.0,0.0,0.0);
 
-  planet sun = {"sun",0.2,0.0,0.8};
-  planet mercury = {"mercury",1.0,1.5,0.1};
-  planet venus = {"venus",0.9,2.0,0.15};
-  planet earth = {"earth",0.8,2.5,0.15};
-  planet mars = {"mars",0.7,3.5,0.2};
-  planet jupiter = {"jupiter",0.6,4.5,0.3};
-  planet saturn = {"saturn",0.5,4.9,0.3};
-  planet uranus = {"uranus",0.4,5.0,0.25};
-  planet neptune = {"neptune",0.3,5.5,0.25};
+  planet sun = {"sun",0.2,0.0,0.8,0.5,0.5,0.5};
+  planet mercury = {"mercury",1.0,1.5,0.1,0.25,0.25,0.15};
+  planet venus = {"venus",0.9,2.0,0.15,0.5,0.25,0.5};
+  planet earth = {"earth",0.8,2.5,0.15,0.75,0.75,0.25};
+  planet mars = {"mars",0.7,3.5,0.2,1.0,0.7,0.5};
+  planet jupiter = {"jupiter",0.6,4.5,0.3,0.9,0.6,0.35};
+  planet saturn = {"saturn",0.5,4.9,0.3,0.125,0.12,0.8};
+  planet uranus = {"uranus",0.4,5.0,0.25,0.12,0.6,0.134};
+  planet neptune = {"neptune",0.3,5.5,0.25,1.0,0.8,0.5};
 //Befüllen des planets-Vectors
   planets.insert(planets.end(),{sun,mercury,venus,earth,mars,jupiter,saturn,uranus,neptune});
   generate_orbits();
@@ -64,6 +63,7 @@ void ApplicationSolar::upload_planet_transforms(planet p) const {
   glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
                      1, GL_FALSE, glm::value_ptr(normal_matrix));
+  glUniform3f(m_shaders.at("planet").u_locs.at("in_Color"),p.r_color,p.g_color,p.b_color);
 }
 
 void ApplicationSolar::upload_moon_transforms(moon m) const {
@@ -90,6 +90,7 @@ void ApplicationSolar::upload_moon_transforms(moon m) const {
   glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
                      1, GL_FALSE, glm::value_ptr(normal_matrix));
+  glUniform3f(m_shaders.at("planet").u_locs.at("in_Color"),m.r_color,m.g_color,m.b_color);
 }
 
 void ApplicationSolar::upload_orbit_transforms(planet p) const{
@@ -162,7 +163,7 @@ void ApplicationSolar::render() const {
 
   }
 //Initalisierung des Erdenmondes nach Moon-Struct
-  moon e_moon = {"e_moon",5.0,0.5,0.08,"earth"};
+  moon e_moon = {"e_moon",5.0,0.5,0.08,"earth",0.1,0.4,0.35};
   glUseProgram(m_shaders.at("planet").handle);
   upload_moon_transforms(e_moon);
 
@@ -257,14 +258,14 @@ void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
 // load shader programs
 void ApplicationSolar::initializeShaderPrograms() {
   // store shader program objects in container
-  m_shaders.emplace("planet", shader_program{m_resource_path + "shaders/simple.vert",
-                                           m_resource_path + "shaders/simple.frag"});
+  m_shaders.emplace("planet", shader_program{m_resource_path + "shaders/planet.vert",
+                                           m_resource_path + "shaders/planet.frag"});
   // request uniform locations for shader program
   m_shaders.at("planet").u_locs["NormalMatrix"] = -1;
   m_shaders.at("planet").u_locs["ModelMatrix"] = -1;
   m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
   m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
-
+  m_shaders.at("planet").u_locs["in_Color"] = -1;
   m_shaders.emplace("star", shader_program{m_resource_path + "shaders/star.vert",
                                            m_resource_path + "shaders/star.frag"});
   // request uniform locations for shader program
