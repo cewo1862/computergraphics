@@ -280,7 +280,7 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("orbit").u_locs["ProjectionMatrix"] = -1;
 }
 void ApplicationSolar::initializeGeometry() {
-  model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
+  model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL | model::TEXCOORD);
   model star_model =  model{svalues, model::NORMAL+model::POSITION, {}};
   model orbit_model =  model{ovalues, model::POSITION, {}};
   // generate vertex array object

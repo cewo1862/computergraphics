@@ -5,12 +5,16 @@ in vec3 pass_Color;
 in vec4 gl_FragCoord;
 in vec3 sun_direction;
 in vec3 view_direction;
+in vec2 pass_TexCoord;
+
+uniform sampler2D ColorTex
 
 out vec4 out_Color;
 
 vec3 light_color = vec3(1.0,1.0,1.0);
 float light_shininess = 50.0;
 
+vec4 color = texture(ColorTex, pass_TexCoord);
 
 vec3 ambient()
 {
@@ -43,5 +47,4 @@ void main() {
   	vec3 spec_value = specular(object_Normal,view_Normal,sun_Normal);
 
   	out_Color = vec4((amb_value+dif_value+spec_value),1.0);
-  	//out_Color.a = 1.0;
 }

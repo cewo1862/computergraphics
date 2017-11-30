@@ -10,15 +10,18 @@ uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 uniform mat4 NormalMatrix;
 uniform vec3 in_Color;
+in vec2 in_TexCoord;
 
 out vec3 pass_Normal;
 out vec3 pass_Color;
 out vec4 gl_Position;
 out vec3 sun_direction;
 out vec3 view_direction;
+out vec2 pass_TexCoord;
 
 void main(void)
 {
+	pass_TexCoord = in_TexCoord;
 	vec4 tmp_vec;
 	tmp_vec = ViewMatrix * ModelMatrix * vec4(in_Position, 1.0);
 	vec4 sun;
