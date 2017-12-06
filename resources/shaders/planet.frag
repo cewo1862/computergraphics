@@ -7,23 +7,23 @@ in vec3 sun_direction;
 in vec3 view_direction;
 in vec2 pass_TexCoord;
 
-uniform sampler2D ColorTex
+uniform sampler2D ColorTex;
 
 out vec4 out_Color;
 
 vec3 light_color = vec3(1.0,1.0,1.0);
 float light_shininess = 50.0;
 
-vec4 color = texture(ColorTex, pass_TexCoord);
+vec3 color = texture(ColorTex, pass_TexCoord).xyz;
 
 vec3 ambient()
 {
-	return pass_Color * light_color;
+	return color * light_color;
 }
 
 vec3 diffuse(in vec3 object_Normal, in vec3 sun_Normal){
 	float diffuseTerm = clamp(dot(object_Normal,sun_Normal),0,1);
-	return (pass_Color * light_color * diffuseTerm);
+	return (color * light_color * diffuseTerm);
 }
 
 vec3 specular(in vec3 object_Normal, in vec3 view_Normal, in vec3 sun_Normal){

@@ -66,5 +66,6 @@ struct planet
   float r_color;
   float g_color;
   float b_color;
+  texture_object p_texture;
 };
 #endif

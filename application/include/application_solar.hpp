@@ -23,6 +23,7 @@ class ApplicationSolar : public Application {
   void mouseCallback(double pos_x, double pos_y);
 
   void upload_planet_transforms(planet p) const;
+  void upload_sky_transforms(planet p) const;
   void upload_moon_transforms(moon m) const;
   void upload_orbit_transforms(planet p) const;
   void upload_orbit_transforms(moon m) const;
@@ -36,6 +37,7 @@ class ApplicationSolar : public Application {
  protected:
   void initializeShaderPrograms();
   void initializeGeometry();
+  void initializeTextures();
   void updateView();
 
   // cpu representation of model
