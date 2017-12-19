@@ -27,8 +27,10 @@ class ApplicationSolar : public Application {
   void upload_moon_transforms(moon m) const;
   void upload_orbit_transforms(planet p) const;
   void upload_orbit_transforms(moon m) const;
+  void upload_quad_transforms() const;
   void generate_stars();
   void generate_orbits();
+  void generate_quad();
 
 
   // draw all objects
@@ -39,14 +41,20 @@ class ApplicationSolar : public Application {
   void initializeGeometry();
   void initializeTextures();
   void updateView();
+  void initializeFrameBuffer();
 
   // cpu representation of model
   model_object planet_object;
   model_object star_object;
   model_object orbit_object;
+  model_object quad_object;
+  texture_object rb_texture;
+  texture_object fb_texture;
+  texture_object t_texture;
   std::vector<planet> planets;
   std::vector<float> svalues;
   std::vector<float> ovalues;
+  std::vector<float> qvalues;
 };
 
 #endif
