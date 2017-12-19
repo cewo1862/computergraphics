@@ -44,6 +44,8 @@ class ApplicationSolar : public Application {
   void initializeFrameBuffer();
 
   // cpu representation of model
+  int vert_switch = 0;
+  int hori_switch = 0;
   model_object planet_object;
   model_object star_object;
   model_object orbit_object;

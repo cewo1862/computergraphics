@@ -318,6 +318,13 @@ void ApplicationSolar::updateProjection() {
 
   glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ProjectionMatrix"),
                      1, GL_FALSE, glm::value_ptr(m_view_projection));
+
+  glBindRenderbuffer(GL_RENDERBUFFER, rb_texture.handle);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, w_width, w_height);
+
+  glBindTexture(GL_TEXTURE_2D, t_texture.handle);
+  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,w_width,w_height,
+                0,GL_RGB,GL_UNSIGNED_BYTE,NULL);
 }
 
 // update uniform locations
@@ -345,6 +352,29 @@ void ApplicationSolar::keyCallback(int key, int scancode, int action, int mods) 
    else if (key == GLFW_KEY_D && action == GLFW_PRESS) {
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.1f, 0.0f, 0.0f});
     updateView();
+  }
+  else if (key == GLFW_KEY_8 && action == GLFW_PRESS) {
+    if(hori_switch == 0){
+    hori_switch = 1;
+    }
+    else{
+    hori_switch = 0;
+    }
+    int hori_switch_location = glGetUniformLocation(m_shaders.at("quad").handle, "hori_switch");
+    glUseProgram(m_shaders.at("quad").handle);
+    glUniform1i(hori_switch_location, hori_switch);
+
+  }
+  else if (key == GLFW_KEY_9 && action == GLFW_PRESS) {
+    if(vert_switch == 0){
+    vert_switch = 1;
+    }
+    else{
+    vert_switch = 0;
+    }
+    int vert_switch_location = glGetUniformLocation(m_shaders.at("quad").handle, "vert_switch");
+    glUseProgram(m_shaders.at("quad").handle);
+    glUniform1i(vert_switch_location, vert_switch);
   }
 }
 
@@ -394,8 +424,8 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.emplace("quad", shader_program{m_resource_path + "shaders/quad.vert",
                                            m_resource_path + "shaders/quad.frag"});
   m_shaders.at("quad").u_locs["ColorTex"] = -1;
-  m_shaders.at("quad").u_locs["vert_switch"] = 0;
-  m_shaders.at("quad").u_locs["ColorTex"] = -1;
+  m_shaders.at("quad").u_locs["vert_switch"] = -1;
+  m_shaders.at("quad").u_locs["hori_switch"] = -1;
 
 }
 void ApplicationSolar::initializeGeometry() {

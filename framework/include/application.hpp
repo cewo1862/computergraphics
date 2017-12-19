@@ -18,7 +18,7 @@ class Application {
   // update uniform locations and values
   inline virtual void uploadUniforms() {};
   // update projection matrix
-  void setProjection(glm::fmat4 const& projection_mat);
+  void setProjection(glm::fmat4 const& projection_mat,int width, int height);
   virtual void updateProjection() = 0;
   // react to key input
   inline virtual void keyCallback(int key, int scancode, int action, int mods) {};
@@ -34,7 +34,8 @@ class Application {
   void updateUniformLocations();
 
   std::string m_resource_path; 
-
+  int w_width;
+  int w_height;
   glm::fmat4 m_view_transform;
   glm::fmat4 m_view_projection;
 
